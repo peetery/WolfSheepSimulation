@@ -4,8 +4,8 @@ from animal import Animal
 
 
 class Wolf(Animal):
-    def __init__(self, move_distance=1.0):
-        super().__init__(0.0, 0.0)
+    def __init__(self, x=0.0, y=0.0, move_distance=1.0):
+        super().__init__(x, y)
         self.move_distance = move_distance
 
     def find_closest_sheep(self, sheep_list):
