@@ -1,7 +1,10 @@
-class Animal:
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
     def __init__(self, x=0.0, y=0.0):
         self.position = (x, y)
 
+    @abstractmethod
     def move(self):
         pass
 

@@ -1,3 +1,4 @@
+import math
 from typing import override
 
 from animal import Animal
@@ -18,15 +19,14 @@ class Wolf(Animal):
                 closest_distance = distance
         return closest_sheep, closest_distance
 
-    @override
-    def move(self, target_sheep):
-        if target_sheep is None:
+    def move(self, target=None):
+        if target is None:
             return
         x1, y1 = self.position
-        x2, y2 = target_sheep.position
-        distance = self.squared_distance_to(target_sheep)
-        if distance <= self.move_distance ** 2:
-            self.position = target_sheep.position
+        x2, y2 = target.position
+        distance_sq = self.squared_distance_to(target)
+        if distance_sq <= self.move_distance ** 2:
+            self.position = target.position
         else:
-            direction = ((x2 - x1) / distance ** 0.5, (y2 - y1) / distance ** 0.5)
+            direction = ((x2 - x1) / math.sqrt(distance_sq), (y2 - y1) / math.sqrt(distance_sq))
             self.position = (x1 + direction[0] * self.move_distance, y1 + direction[1] * self.move_distance)
