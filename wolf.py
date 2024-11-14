@@ -22,11 +22,12 @@ class Wolf(Animal):
     def move(self, target=None):
         if target is None:
             return
-        x1, y1 = self.position
-        x2, y2 = target.position
+        wx, wy = self.position
+        tx, ty = target.position
         distance_sq = self.squared_distance_to(target)
         if distance_sq <= self.move_distance ** 2:
             self.position = target.position
         else:
-            direction = ((x2 - x1) / math.sqrt(distance_sq), (y2 - y1) / math.sqrt(distance_sq))
-            self.position = (x1 + direction[0] * self.move_distance, y1 + direction[1] * self.move_distance)
+            distance = math.sqrt(distance_sq)
+            factors = ((tx - wx) / distance, (ty - wy) / distance)
+            self.position = (wx + factors[0] * self.move_distance, wy + factors[1] * self.move_distance)
