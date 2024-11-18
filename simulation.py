@@ -1,4 +1,5 @@
 import random
+import time
 
 from wolf import Wolf
 from sheep import Sheep
@@ -17,38 +18,49 @@ class Simulation:
                   move_distance = sheep_move_dist)
             for _ in range(num_sheep)
         ]
+        self.pos_data = []
+        self.alive_data = []
 
     def run(self):
-        pos_data = []
-        alive_data = []
+        for self.round_no in range(1, self.max_rounds + 1):
+            self.run_round()
+            self.save_round_data()
 
-        while self.sheep and self.round_no < self.max_rounds:
-            self.round_no += 1
-            print(f"Round {self.round_no}")
+            alive_sheep_count = len([sheep for sheep in self.sheep if sheep.alive])
+            print(f"Round {self.round_no}: Wolf at ({self.wolf.get_position()[0]:.3f},"
+                  f" {self.wolf.get_position()[1]:.3f}), Alive sheep: {alive_sheep_count}")
+            if alive_sheep_count == 0:
+                print("All sheep have been eaten. Simulation ended.")
+                break
+            #else:
+                #time.sleep(0.5)
 
-            for sheep in self.sheep:
+    def run_round(self):
+        for sheep in self.sheep:
+            if sheep.alive:
                 sheep.move()
 
-            closest_sheep, closest_distance = self.wolf.find_closest_sheep(self.sheep)
-            if closest_sheep:
-                if closest_distance <= self.wolf.move_distance ** 2:
-                    print(f"Wolf eats sheep at position {closest_sheep.get_position()}")
-                    self.wolf.move(target=closest_sheep)
-                    self.sheep.remove(closest_sheep)
-                else:
-                    print(f"Wolf chases sheep at position {closest_sheep.get_position()}")
-                    self.wolf.move(target=closest_sheep)
+        closest_sheep, closest_distance = self.wolf.find_closest_sheep(self.sheep)
+        if closest_sheep:
+            sheep_index = self.sheep.index(closest_sheep)
+            if closest_distance <= self.wolf.move_distance ** 2:
+                print(f"Wolf eats sheep {sheep_index}")
+                self.wolf.move(target=closest_sheep)
+                closest_sheep.die()
+            else:
+                print(f"Wolf chases sheep {sheep_index}")
+                self.wolf.move(target=closest_sheep)
 
-            pos_data.append({
-                'round_no': self.round_no,
-                'wolf_pos:': self.wolf.get_position(),
-                'sheep_pos': [sheep.get_position() if sheep in self.sheep else None for sheep in self.sheep]
-            })
+    def save_round_data(self):
+        self.pos_data.append({
+            'round_no': self.round_no,
+            'wolf_pos': self.wolf.get_position(),
+            'sheep_pos': [sheep.get_position() if sheep.alive else None for sheep in self.sheep]
+        })
 
-            alive_data.append((self.round_no, len(self.sheep)))
+        alive_sheep_count = len([sheep for sheep in self.sheep if sheep.alive])
+        self.alive_data.append([self.round_no, alive_sheep_count])
 
-            print(f"Wolf position: {self.wolf.get_position()}")
-            print(f"Number of sheep alive: {len(self.sheep)}")
-
-            save_to_json(pos_data)
-            save_to_csv(alive_data)
+        if self.round_no == self.max_rounds or alive_sheep_count == 0:
+            save_to_json(self.pos_data)
+            save_to_csv(self.alive_data)

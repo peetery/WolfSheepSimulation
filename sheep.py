@@ -5,8 +5,8 @@ from animal import Animal
 
 class Sheep(Animal):
     def __init__(self, x, y, move_distance=0.5):
-        super().__init__(x, y)
-        self.move_distance = move_distance
+        super().__init__(x, y, move_distance)
+        self.alive = True
 
     def move(self):
         directions = {
@@ -18,3 +18,7 @@ class Sheep(Animal):
         direction = random.choice(list(directions.values()))
         x, y = self.position
         self.position = (x + direction[0], y + direction[1])
+
+    def die(self):
+        self.alive = False
+        self.position = None

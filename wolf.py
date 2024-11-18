@@ -5,18 +5,21 @@ from animal import Animal
 
 class Wolf(Animal):
     def __init__(self, x=0.0, y=0.0, move_distance=1.0):
-        super().__init__(x, y)
-        self.move_distance = move_distance
+        super().__init__(x, y, move_distance)
 
     def find_closest_sheep(self, sheep_list):
-        closest_sheep = None
-        closest_distance = float("inf")
-        for sheep in sheep_list:
-            distance = self.squared_distance_to(sheep)
-            if distance < closest_distance:
-                closest_sheep = sheep
-                closest_distance = distance
-        return closest_sheep, closest_distance
+        living_sheep = [sheep for sheep in sheep_list if sheep.alive]
+        if not living_sheep:
+            return None
+        else:
+            closest_sheep = None
+            closest_distance = float("inf")
+            for sheep in living_sheep:
+                distance = self.squared_distance_to(sheep)
+                if distance < closest_distance:
+                    closest_sheep = sheep
+                    closest_distance = distance
+            return closest_sheep, closest_distance
 
     def move(self, target=None):
         if target is None:
