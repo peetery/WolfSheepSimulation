@@ -23,17 +23,21 @@ class Simulation:
 
     def run(self):
         for self.round_no in range(1, self.max_rounds + 1):
+            print(f"\nRound {self.round_no}:")
             self.run_round()
-            self.save_round_data()
 
             alive_sheep_count = len([sheep for sheep in self.sheep if sheep.alive])
-            print(f"Round {self.round_no}: Wolf at ({self.wolf.get_position()[0]:.3f},"
+            print(f"Wolf at ({self.wolf.get_position()[0]:.3f},"
                   f" {self.wolf.get_position()[1]:.3f}), Alive sheep: {alive_sheep_count}")
+
+            self.save_round_data()
+
             if alive_sheep_count == 0:
-                print("All sheep have been eaten. Simulation ended.")
+                print("\nAll sheep have been eaten. Simulation ended.")
                 break
-            #else:
-                #time.sleep(0.5)
+            elif self.round_no == self.max_rounds:
+                print("\nMax rounds reached. Simulation ended.")
+                break
 
     def run_round(self):
         for sheep in self.sheep:
