@@ -1,5 +1,4 @@
 import random
-import time
 
 from wolf import Wolf
 from sheep import Sheep
