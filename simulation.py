@@ -29,14 +29,13 @@ class Simulation:
             print(f"Wolf at ({self.wolf.get_position()[0]:.3f},"
                   f" {self.wolf.get_position()[1]:.3f}), Alive sheep: {alive_sheep_count}")
 
-            self.save_round_data()
+            self.save_round_data(alive_sheep_count)
 
             if alive_sheep_count == 0:
                 print("\nAll sheep have been eaten. Simulation ended.")
                 break
-            elif self.round_no == self.max_rounds:
-                print("\nMax rounds reached. Simulation ended.")
-                break
+
+        print("\nMax rounds reached. Simulation ended.")
 
     def run_round(self):
         for sheep in self.sheep:
@@ -54,14 +53,13 @@ class Simulation:
                 print(f"Wolf chases sheep {sheep_index}")
                 self.wolf.move(target=closest_sheep)
 
-    def save_round_data(self):
+    def save_round_data(self, alive_sheep_count):
         self.pos_data.append({
             'round_no': self.round_no,
             'wolf_pos': self.wolf.get_position(),
-            'sheep_pos': [sheep.get_position() if sheep.alive else None for sheep in self.sheep]
+            'sheep_pos': [sheep.get_position() for sheep in self.sheep]
         })
 
-        alive_sheep_count = len([sheep for sheep in self.sheep if sheep.alive])
         self.alive_data.append([self.round_no, alive_sheep_count])
 
         if self.round_no == self.max_rounds or alive_sheep_count == 0:
